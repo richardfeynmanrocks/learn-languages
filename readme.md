@@ -1,10 +1,12 @@
-# learn-arm
+# learn-languages
 
-## About
-A collection of short code snippets that I wrote in an effort to learn some of the ARM Unified Assembly Language.
+A repository for code written in various languages in an effort to learn some. These may range from tiny snippets to relatively involved programs, and the motivations may range from curiosity and interest, to a genuine want to improve my skills at a language.
 
-## Motivation
-With it's cheap cost and efficient nature, ARM chips are strong competitors in the processor market and are likely the future of parallelization. Many devices already use them such as compact smart watches or mobile phones, and they are beginning to take hold in the desktop market as well, with one notable switch being Apple's new ARM-based chip for the Mac. As a result of these facts, I figured it was useful to learn some ARM assembly and would be interesting.
+## Languages
 
-## VisUAL
-[VisUAL](https://salmanarif.bitbucket.io/visual/) is a ARM UAL editor and emulator that makes learning and using UAL (or a portion of it at least) significantly easier. VisUAL has an emphasis on visualizing many aspects of the assembly code (such as register contents, stack, memory, and more) which further incentivizes giving UAL a try.
+Some of the languages I have or plan to populate this with are:
+
+- Functional languages like Haskell (or maybe Clojure or even Lisp) to experience a significantly different style of CS.
+- Assembly code in various architectures to experience some more low-level programming.
+- C/C++ to get better at writing *good* code rather than just code.
+- And more depending on my interest!
