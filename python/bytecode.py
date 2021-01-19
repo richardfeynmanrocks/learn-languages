@@ -2,98 +2,39 @@ import types
 from dis import dis
 
 def test():
-    print("Testeroo")
-    file = open("bytecode.py")
-    a = file.read()
-    c = compile(a, '<string>', 'exec')
-    fn_code = c.co_consts[5] # Pick up the function code from the main code
-    test = c.co_consts[7] # Pick up the function code from the main code
-    print (c.co_consts)
-    print (c.co_code)
+    c = compile(open("bytecode.py").read(), '<string>', 'exec')
+    fn_code = c.co_consts[5]
+    ex_code = c.co_consts[7]
     dis(fn_code)
-    print(fn_code.co_code)
-    b = write_to_bytecode(c, fn_code, fn_code.co_code[:-14]+bytes("\x01\x00d\x00S\x00", 'utf-8'))
-    print(b.co_code)
+    bytecode = fn_code.co_code
+    bytecode = replace_op(bytecode, 4, "\x13")
+    print(bytecode)
+    print("="*30)
+    dis(ex_code)
+    print(ex_code.co_code)
+    # bytecode[3] = 
+    b = write_to_bytecode(c, fn_code, bytecode)
     dis(b)
-    dis(test)
-    print(test.co_code)
-    eval(b)
+    exec(b)
 
-def abc():
-    print ("hi")
-    print ("bye")
-    return 2
+def roots(a,b,c):
+    d = b*2 - (4*a*c)
+    if d < 0: return None
+    r_1 = (-b+sqrt(b**2 + 4*a*c))/(2*a)
+    r_2 = (-b-sqrt(b**2 - 4*a*c))
+    return (r_1, r_2)
 
-def abcd():
-    print ("AAA")
+def ex():
+    d = 2**a
+
+def replace_op(bytecode, index, new):
+    return bytecode[0:index] + bytes(new, "utf-8") + bytecode[index+1:]
     
 def write_to_bytecode(code, fn_code, new_bytes):
-    updt = types.CodeType(fn_code.co_argcount,
-                          code.co_kwonlyargcount,
-                          code.co_posonlyargcount,
-                          fn_code.co_nlocals,
-                          fn_code.co_stacksize,
-                          fn_code.co_flags,
-                          new_bytes,
-                          fn_code.co_consts,
-                          fn_code.co_names,
-                          fn_code.co_varnames,
-                          fn_code.co_filename,
-                          fn_code.co_name,
-                          fn_code.co_firstlineno,
-                          fn_code.co_lnotab,
-                          fn_code.co_freevars,
-                          fn_code.co_cellvars)
-    return updt
+    return types.CodeType(fn_code.co_argcount, code.co_kwonlyargcount, code.co_posonlyargcount,
+                          fn_code.co_nlocals, fn_code.co_stacksize, fn_code.co_flags,
+                          new_bytes, fn_code.co_consts, fn_code.co_names,
+                          fn_code.co_varnames, fn_code.co_filename, fn_code.co_name, fn_code.co_firstlineno,
+                          fn_code.co_lnotab, fn_code.co_freevars, fn_code.co_cellvars)
 
 test()
-# print("=" * 30)
-
-# x = fn_code.co_code[6:16] # modify bytecode
-
-# import types
-# opt_fn_code = types.CodeType(fn_code.co_argcount,
-#                              c.co_kwonlyargcount,  # Add this in Python3
-#                              c.co_posonlyargcount, # Add this in Python 3.8+
-#                              fn_code.co_nlocals,
-#                              fn_code.co_stacksize,
-#                              fn_code.co_flags,
-#                              x,  # fn_code.co_code: this you changed
-#                              fn_code.co_consts,
-#                              fn_code.co_names,
-#                              fn_code.co_varnames,
-#                              fn_code.co_filename,
-#                              fn_code.co_name,
-#                              fn_code.co_firstlineno,
-#                              fn_code.co_lnotab,   # In general, You should adjust this
-#                              fn_code.co_freevars,
-#                              fn_code.co_cellvars)
-# dis(opt_fn_code)
-# print("=" * 30)
-# print("Result is", eval(fn_code))
-# #print("Result is", eval(opt_fn_code))
-
-# # Now let's change the value of what's returned
-# co_consts = list(opt_fn_code.co_consts)
-# co_consts[-1] = 10
-
-# opt_fn_code = types.CodeType(fn_code.co_argcount,
-#                              # c.co_kwonlyargcount,  Add this in Python3
-#                              # c.co_posonlyargcount, Add this in Python 3.8+
-#                              fn_code.co_nlocals,
-#                              fn_code.co_stacksize,
-#                              fn_code.co_flags,
-#                              x,  # fn_code.co_code: this you changed
-#                              tuple(co_consts), # this is now changed too
-#                              fn_code.co_names,
-#                              fn_code.co_varnames,
-#                              fn_code.co_filename,
-#                              fn_code.co_name,
-#                              fn_code.co_firstlineno,
-#                              fn_code.co_lnotab,   # In general, You should adjust this
-#                              fn_code.co_freevars,
-#                              fn_code.co_cellvars)
-
-# dis(opt_fn_code)
-# print("=" * 30)
-# print("Result is now", eval(opt_fn_code))
