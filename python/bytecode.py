@@ -1,5 +1,6 @@
 import types
 from dis import dis
+import math
 
 def test():
     c = compile(open("bytecode.py").read(), '<string>', 'exec')
@@ -8,6 +9,8 @@ def test():
     dis(fn_code)
     bytecode = fn_code.co_code
     bytecode = replace_op(bytecode, 4, "\x13")
+    bytecode = replace_op(bytecode, 54, "\x18")
+    bytecode = insert_op(bytecode, 68, "\x00|\x00d\x03k\x02r\x54d\x00|\x00S\x00a")
     print(bytecode)
     print("="*30)
     dis(ex_code)
@@ -15,20 +18,26 @@ def test():
     # bytecode[3] = 
     b = write_to_bytecode(c, fn_code, bytecode)
     dis(b)
-    exec(b)
+    print("Test")
+    print(eval(b, {'a':2, 'b':1, 'c':0, 'sqrt':math.sqrt}))
 
-def roots(a,b,c):
+def roots():
     d = b*2 - (4*a*c)
     if d < 0: return None
     r_1 = (-b+sqrt(b**2 + 4*a*c))/(2*a)
     r_2 = (-b-sqrt(b**2 - 4*a*c))
+    print(r_2)
     return (r_1, r_2)
 
 def ex():
-    d = 2**a
+    a = 0
+    return a
 
 def replace_op(bytecode, index, new):
     return bytecode[0:index] + bytes(new, "utf-8") + bytecode[index+1:]
+
+def insert_op(bytecode, index, new):
+    return bytecode[0:index+1] + bytes(new, "utf-8") + bytecode[index+1:]
     
 def write_to_bytecode(code, fn_code, new_bytes):
     return types.CodeType(fn_code.co_argcount, code.co_kwonlyargcount, code.co_posonlyargcount,
