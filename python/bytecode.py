@@ -8,10 +8,13 @@ def test():
     ex_code = c.co_consts[7]
     dis(fn_code)
     bytecode = fn_code.co_code
+    print(bytecode[68:82])
     bytecode = replace_op(bytecode, 4, "\x13")
     bytecode = replace_op(bytecode, 54, "\x18")
-    bytecode = insert_op(bytecode, 68, "\x00|\x00d\x03k\x02r\x54d\x00|\x00S\x00a")
+    bytecode = insert_op(bytecode, 68, "\x01|\x00|\x00d\x03k\x02r\x54|\x01S\x00a")
+    bytecode = insert_op(bytecode, 112, "\x00}\x14\x1b")
     print(bytecode)
+    print(bytecode[68:82])
     print("="*30)
     dis(ex_code)
     print(ex_code.co_code)
@@ -19,6 +22,8 @@ def test():
     b = write_to_bytecode(c, fn_code, bytecode)
     dis(b)
     print("Test")
+    print(eval(b, {'a':2, 'b':1, 'c':3, 'sqrt':math.sqrt}))
+    print(eval(b, {'a':2, 'b':1, 'c':0.125, 'sqrt':math.sqrt}))
     print(eval(b, {'a':2, 'b':1, 'c':0, 'sqrt':math.sqrt}))
 
 def roots():
@@ -26,12 +31,10 @@ def roots():
     if d < 0: return None
     r_1 = (-b+sqrt(b**2 + 4*a*c))/(2*a)
     r_2 = (-b-sqrt(b**2 - 4*a*c))
-    print(r_2)
     return (r_1, r_2)
 
 def ex():
-    a = 0
-    return a
+    if (a > 0): return a/2
 
 def replace_op(bytecode, index, new):
     return bytecode[0:index] + bytes(new, "utf-8") + bytecode[index+1:]
