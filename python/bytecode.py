@@ -8,13 +8,15 @@ def test():
     ex_code = c.co_consts[7]
     dis(fn_code)
     bytecode = fn_code.co_code
-    print(bytecode[68:82])
+    print(bytecode[56:68])
+    print(bytecode)
     bytecode = replace_op(bytecode, 4, "\x13")
     bytecode = replace_op(bytecode, 54, "\x18")
-    bytecode = insert_op(bytecode, 68, "\x01|\x00|\x00d\x03k\x02r\x54|\x01S\x00a")
-    bytecode = insert_op(bytecode, 112, "\x00}\x14\x1b")
+    bytecode = insert_op(bytecode, 68, "\x01|\x00|\x00d\x03k\x02r\x56|\x01S\x00a")
+    #bytecode = replace_op(bytecode, 100, "")
+    bytecode = insert_op(bytecode, 112, "\x00d\x01t\x01\x14\x00\x1b")
     print(bytecode)
-    print(bytecode[68:82])
+    print(bytecode[112:114])
     print("="*30)
     dis(ex_code)
     print(ex_code.co_code)
@@ -30,16 +32,22 @@ def roots():
     d = b*2 - (4*a*c)
     if d < 0: return None
     r_1 = (-b+sqrt(b**2 + 4*a*c))/(2*a)
+    #if d == 0: return r_1
     r_2 = (-b-sqrt(b**2 - 4*a*c))
     return (r_1, r_2)
 
 def ex():
-    if (a > 0): return a/2
+    return 1/(2*a)
 
 def replace_op(bytecode, index, new):
     return bytecode[0:index] + bytes(new, "utf-8") + bytecode[index+1:]
 
 def insert_op(bytecode, index, new):
+    print ("called with", index)
+    print (bytecode[0:index+1])
+    print (bytes(new, "utf-8"))
+    print (bytecode[index+1:])
+    print ("")
     return bytecode[0:index+1] + bytes(new, "utf-8") + bytecode[index+1:]
     
 def write_to_bytecode(code, fn_code, new_bytes):
